@@ -54,13 +54,6 @@ jobs:
           touch .env
           echo "${{ secrets.CLIPMIL_BE_ENV }}" > .env
 
-      - name: Setup GCP credentials
-        run: |
-          echo "Creating GCP credentials files..."
-          echo '${{ secrets.GCP_CREDENTIALS }}' > gcp-credentials.json
-          echo '${{ secrets.GCP_SERVER_KEY }}' > gcp-servicekey.json
-          echo "GCP credentials files created"
-
       - name: Build TypeScript
         run: npm run build
 

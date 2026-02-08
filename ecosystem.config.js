@@ -1,7 +1,7 @@
 module.exports = {
 	apps: [
 		{
-			name: 'pinterest-youtube-pipeline',
+			name: 'clipmil',
 			script: './dist/index.js',
 			instances: 1,
 			exec_mode: 'fork',

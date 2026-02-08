@@ -58,13 +58,13 @@ system reboot. 🎉
 pm2 start ecosystem.config.js
 
 # Stop the service
-pm2 stop pinterest-youtube-pipeline
+pm2 stop clipmil
 
 # Restart the service
-pm2 restart pinterest-youtube-pipeline
+pm2 restart clipmil
 
 # Delete the service from PM2
-pm2 delete pinterest-youtube-pipeline
+pm2 delete clipmil
 
 # Restart all processes
 pm2 restart all
@@ -83,7 +83,7 @@ pm2 status
 pm2 monit
 
 # Show detailed process info
-pm2 show pinterest-youtube-pipeline
+pm2 show clipmil
 
 # View process list
 pm2 list
@@ -96,7 +96,7 @@ pm2 list
 pm2 logs
 
 # View logs for specific app
-pm2 logs pinterest-youtube-pipeline
+pm2 logs clipmil
 
 # View only error logs
 pm2 logs --err
@@ -116,10 +116,10 @@ tail -f logs/pm2-error.log
 
 ```bash
 # Reload (zero-downtime restart)
-pm2 reload pinterest-youtube-pipeline
+pm2 reload clipmil
 
 # Graceful stop
-pm2 stop pinterest-youtube-pipeline --wait-ready
+pm2 stop clipmil --wait-ready
 
 # Update PM2
 pm2 update
@@ -137,7 +137,7 @@ pm2 resurrect
 
 ```javascript
 {
-  name: 'pinterest-youtube-pipeline',       // Process name
+  name: 'clipmil',       // Process name
   script: './dist/index.js',                 // Entry point (compiled JS)
   instances: 1,                              // Single instance
   exec_mode: 'fork',                         // Fork mode (not cluster)
@@ -238,10 +238,10 @@ pm2 status
 npm run build
 
 # Restart service
-pm2 restart pinterest-youtube-pipeline
+pm2 restart clipmil
 
 # Or use reload for zero-downtime
-pm2 reload pinterest-youtube-pipeline
+pm2 reload clipmil
 ```
 
 ### Monitoring Health
@@ -269,7 +269,7 @@ pm2 status
 ┌─────┬──────────────────────────────┬─────────┬─────────┬──────────┬────────┬──────┬──────┬──────┐
 │ id  │ name                         │ mode    │ ↺      │ status   │ cpu    │ mem  │      │      │
 ├─────┼──────────────────────────────┼─────────┼─────────┼──────────┼────────┼──────┼──────┼──────┤
-│ 0   │ pinterest-youtube-pipeline   │ fork    │ 0       │ online   │ 0%     │ 45MB │      │      │
+│ 0   │ clipmil   │ fork    │ 0       │ online   │ 0%     │ 45MB │      │      │
 └─────┴──────────────────────────────┴─────────┴─────────┴──────────┴────────┴──────┴──────┴──────┘
 ```
 
@@ -300,7 +300,7 @@ pm2 status
 pm2 logs --err --lines 50
 
 # View detailed info
-pm2 show pinterest-youtube-pipeline
+pm2 show clipmil
 
 # Check if port is in use
 lsof -i :4000
@@ -316,7 +316,7 @@ node dist/index.js
 pm2 monit
 
 # Restart to clear memory
-pm2 restart pinterest-youtube-pipeline
+pm2 restart clipmil
 
 # Adjust max_memory_restart in ecosystem.config.js
 # Current: 500M (will restart if exceeds)
@@ -333,7 +333,7 @@ mkdir -p logs
 
 # Flush and restart
 pm2 flush
-pm2 restart pinterest-youtube-pipeline
+pm2 restart clipmil
 ```
 
 ### Auto-Start Not Working
@@ -365,7 +365,7 @@ pm2 logs --err --lines 100
 # Common issues:
 # - Port already in use
 # - Missing .env file
-# - Missing youtube-config.json or youtube-tokens.json
+# - Missing YouTube OAuth environment variables
 # - Python virtual environment not found
 # - ffmpeg not installed
 ```
@@ -386,6 +386,9 @@ cat .env
 # Should contain:
 # GEMINI_API_KEY=your_key_here
 # PORT=4000
+# YOUTUBE_CLIENT_ID=your_client_id
+# YOUTUBE_CLIENT_SECRET=your_client_secret
+# YOUTUBE_REDIRECT_URIS=http://localhost:4000/auth/youtube/callback
 ```
 
 ## Production Checklist
@@ -395,7 +398,7 @@ Before running in production:
 - [ ] Install PM2 globally: `npm install -g pm2`
 - [ ] Build project: `npm run build`
 - [ ] Create `.env` file with `GEMINI_API_KEY`
-- [ ] Set up YouTube OAuth credentials
+- [ ] Set up YouTube OAuth environment variables
 - [ ] Create `logs/` directory: `mkdir -p logs`
 - [ ] Test manual run: `node dist/index.js`
 - [ ] Start with PM2: `pm2 start ecosystem.config.js`
@@ -480,7 +483,7 @@ You can have different configurations for dev/staging/prod:
 module.exports = {
 	apps: [
 		{
-			name: 'pinterest-youtube-pipeline',
+			name: 'clipmil',
 			script: './dist/index.js',
 			env_production: {
 				NODE_ENV: 'production',
@@ -514,8 +517,8 @@ Add to your `~/.zshrc` or `~/.bashrc`:
 alias pm2s='pm2 status'
 alias pm2l='pm2 logs'
 alias pm2m='pm2 monit'
-alias pm2r='pm2 restart pinterest-youtube-pipeline'
-alias pm2restart='npm run build && pm2 restart pinterest-youtube-pipeline'
+alias pm2r='pm2 restart clipmil'
+alias pm2restart='npm run build && pm2 restart clipmil'
 
 # Reload shell
 source ~/.zshrc  # or source ~/.bashrc
@@ -555,7 +558,7 @@ pm2 monit     # Monitor resources
 
 ```bash
 npm run build
-pm2 restart pinterest-youtube-pipeline
+pm2 restart clipmil
 ```
 
 **That's it!** Your Pinterest → YouTube pipeline now runs 24/7 in the

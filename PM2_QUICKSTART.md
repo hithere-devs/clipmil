@@ -29,7 +29,7 @@ pm2 status
 ```bash
 npm run pm2:logs
 # or
-pm2 logs pinterest-youtube-pipeline
+pm2 logs clipmil
 ```
 
 ### Restart After Code Changes
@@ -221,7 +221,7 @@ pm2 link <secret_key> <public_key>
 
 ```bash
 # Delete and recreate
-pm2 delete pinterest-youtube-pipeline
+pm2 delete clipmil
 npm run build
 pm2 start ecosystem.config.js
 pm2 save
@@ -271,7 +271,7 @@ pm2 logs --err --lines 200 --nostream
    ```bash
    # Add to ~/.zshrc
    alias pm2s='pm2 status'
-   alias pm2l='pm2 logs pinterest-youtube-pipeline'
+   alias pm2l='pm2 logs clipmil'
    alias pm2r='npm run pm2:deploy'
    ```
 

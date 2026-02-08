@@ -5,9 +5,6 @@ import path from 'path';
 import { generateVideoMetadata } from './aiContentGenerator';
 import { getUserTokens } from './db';
 
-const CONFIG_PATH = path.join(__dirname, '..', 'gcp-credentials.json');
-const TOKENS_PATH = path.join(__dirname, '..', 'youtube-tokens.json');
-
 // Google OAuth scopes for YouTube, Profile, and GCS
 const SCOPES = [
     // User Profile
@@ -56,12 +53,36 @@ interface VideoMetadata {
  * Load GCP OAuth2 configuration
  */
 function loadConfig(): GCPCredentials {
-    if (!fs.existsSync(CONFIG_PATH)) {
+    const clientId = process.env.YOUTUBE_CLIENT_ID;
+    const clientSecret = process.env.YOUTUBE_CLIENT_SECRET;
+    const redirectUrisRaw = process.env.YOUTUBE_REDIRECT_URIS || process.env.YOUTUBE_REDIRECT_URI;
+
+    if (!clientId || !clientSecret || !redirectUrisRaw) {
         throw new Error(
-            'GCP credentials not found. Create gcp-credentials.json with your OAuth2 credentials from Google Cloud Console.'
+            'Missing YouTube OAuth environment variables. Set YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, and YOUTUBE_REDIRECT_URIS (comma-separated) or YOUTUBE_REDIRECT_URI.'
         );
     }
-    return JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
+
+    const redirectUris = redirectUrisRaw.split(',').map((uri) => uri.trim()).filter(Boolean);
+    if (redirectUris.length === 0) {
+        throw new Error('YOUTUBE_REDIRECT_URIS must include at least one redirect URI.');
+    }
+
+    return {
+        web: {
+            client_id: clientId,
+            client_secret: clientSecret,
+            project_id: process.env.GCS_PROJECT_ID || 'gen-lang-client-0040772112',
+            auth_uri: 'https://accounts.google.com/o/oauth2/auth',
+            token_uri: 'https://oauth2.googleapis.com/token',
+            auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
+            redirect_uris: redirectUris,
+            javascript_origins: (process.env.YOUTUBE_JAVASCRIPT_ORIGINS || '')
+                .split(',')
+                .map((origin) => origin.trim())
+                .filter(Boolean),
+        },
+    };
 }
 
 /**
@@ -72,7 +93,7 @@ export function createOAuth2Client(tokens?: YouTubeTokens): OAuth2Client {
     const { web } = config;
 
     // Use the first redirect URI or default
-    const redirectUri = web.redirect_uris[0] || 'http://localhost:4000/auth/youtube/callback';
+    const redirectUri = web.redirect_uris[0];
 
     const oauth2Client = new google.auth.OAuth2(
         web.client_id,
@@ -80,12 +101,12 @@ export function createOAuth2Client(tokens?: YouTubeTokens): OAuth2Client {
         redirectUri
     );
 
-    // Load saved tokens if available (legacy file support)
+    // Load tokens if provided or from env (legacy file support removed)
     if (tokens) {
         oauth2Client.setCredentials(tokens);
-    } else if (fs.existsSync(TOKENS_PATH)) {
-        const fileTokens: YouTubeTokens = JSON.parse(fs.readFileSync(TOKENS_PATH, 'utf8'));
-        oauth2Client.setCredentials(fileTokens);
+    } else if (process.env.YOUTUBE_TOKENS_JSON) {
+        const envTokens: YouTubeTokens = JSON.parse(process.env.YOUTUBE_TOKENS_JSON);
+        oauth2Client.setCredentials(envTokens);
     }
 
     return oauth2Client;
@@ -125,7 +146,7 @@ export async function getTokensFromCode(code: string): Promise<YouTubeTokens> {
  * Check if user is authenticated
  */
 export function isAuthenticated(): boolean {
-    return fs.existsSync(TOKENS_PATH);
+    return !!process.env.YOUTUBE_TOKENS_JSON;
 }
 
 /**

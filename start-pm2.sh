@@ -64,10 +64,10 @@ fi
 echo ""
 
 # Check if process is already running
-if pm2 describe pinterest-youtube-pipeline > /dev/null 2>&1; then
+if pm2 describe clipmil > /dev/null 2>&1; then
     echo -e "${YELLOW}⚠️  Process is already running${NC}"
     echo "Restarting..."
-    pm2 restart pinterest-youtube-pipeline
+    pm2 restart clipmil
     echo -e "${GREEN}✅ Process restarted${NC}"
 else
     echo "🚀 Starting process with PM2..."
@@ -89,7 +89,7 @@ echo ""
 
 # Show logs info
 echo "📝 View logs with:"
-echo "  pm2 logs pinterest-youtube-pipeline"
+echo "  pm2 logs clipmil"
 echo ""
 
 # Setup startup script

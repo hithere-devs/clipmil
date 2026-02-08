@@ -1,5 +1,4 @@
 import { Storage } from '@google-cloud/storage';
-import fs from 'fs';
 import path from 'path';
 import 'dotenv/config';
 
@@ -10,20 +9,6 @@ import 'dotenv/config';
 const storageOptions: ConstructorParameters<typeof Storage>[0] = {
     projectId: process.env.GCS_PROJECT_ID || 'gen-lang-client-0040772112',
 };
-
-// Only set keyFilename if it's a service account file (not OAuth)
-const keyFile = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-if (keyFile && fs.existsSync(keyFile)) {
-    try {
-        const keyContent = JSON.parse(fs.readFileSync(keyFile, 'utf-8'));
-        // Check if it's a service account key (has private_key field)
-        if (keyContent.private_key && keyContent.client_email) {
-            storageOptions.keyFilename = keyFile;
-        }
-    } catch (error) {
-        console.warn('Could not read GCP credentials file, using default credentials');
-    }
-}
 
 // If explicit credentials are provided via env vars
 if (process.env.GCS_CLIENT_EMAIL && process.env.GCS_PRIVATE_KEY) {

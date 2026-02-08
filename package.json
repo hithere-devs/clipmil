@@ -1,7 +1,7 @@
 {
-	"name": "video-pipeline",
+	"name": "clipmil",
 	"version": "0.1.0",
-	"description": "Pinterest video downloader service with scheduled YouTube upload pipeline.",
+	"description": "Clipmil service with scheduled video processing and YouTube upload pipeline.",
 	"type": "commonjs",
 	"main": "dist/index.js",
 	"scripts": {
@@ -11,13 +11,13 @@
 		"clean": "rimraf dist",
 		"upload-bg-videos": "tsx scripts/upload-background-videos.ts",
 		"pm2:start": "pm2 start ecosystem.config.js",
-		"pm2:stop": "pm2 stop pinterest-youtube-pipeline",
-		"pm2:restart": "pm2 restart pinterest-youtube-pipeline",
-		"pm2:delete": "pm2 delete pinterest-youtube-pipeline",
-		"pm2:logs": "pm2 logs pinterest-youtube-pipeline",
+		"pm2:stop": "pm2 stop clipmil",
+		"pm2:restart": "pm2 restart clipmil",
+		"pm2:delete": "pm2 delete clipmil",
+		"pm2:logs": "pm2 logs clipmil",
 		"pm2:monit": "pm2 monit",
 		"pm2:status": "pm2 status",
-		"pm2:deploy": "npm run build && pm2 restart pinterest-youtube-pipeline"
+		"pm2:deploy": "npm run build && pm2 restart clipmil"
 	},
 	"keywords": [
 		"pinterest",

@@ -1,4 +1,4 @@
-# Pinterest Video Pipeline
+# Clipmil
 
 A Node.js service that polls a local queue of Pinterest links, downloads the
 referenced videos to your machine, and tracks the processed items so they are
@@ -125,22 +125,22 @@ To enable automatic YouTube uploads after downloading Pinterest videos:
 5. Add authorized redirect URI: `http://localhost:4000/auth/youtube/callback`
 6. Download the credentials JSON
 
-### 3. Configure Your Application
+### 3. Configure Your Application (Environment Variables)
 
-1. Copy the example config:
+Set these in `.env` locally and in your deployment environment:
 
-   ```bash
-   cp youtube-config.example.json youtube-config.json
-   ```
+```bash
+YOUTUBE_CLIENT_ID=YOUR_CLIENT_ID.apps.googleusercontent.com
+YOUTUBE_CLIENT_SECRET=YOUR_CLIENT_SECRET
+YOUTUBE_REDIRECT_URIS=http://localhost:4000/auth/youtube/callback
+YOUTUBE_JAVASCRIPT_ORIGINS=http://localhost:4000
+```
 
-2. Edit `youtube-config.json` with your credentials:
-   ```json
-   {
-   	"clientId": "YOUR_CLIENT_ID.apps.googleusercontent.com",
-   	"clientSecret": "YOUR_CLIENT_SECRET",
-   	"redirectUri": "http://localhost:4000/auth/youtube/callback"
-   }
-   ```
+Optional (single-user/local only):
+
+```bash
+YOUTUBE_TOKENS_JSON={"access_token":"...","refresh_token":"...","scope":"...","token_type":"Bearer","expiry_date":123456789}
+```
 
 ### 4. Authenticate with YouTube
 
@@ -156,7 +156,8 @@ To enable automatic YouTube uploads after downloading Pinterest videos:
 
 4. You'll be redirected back with a success message
 
-5. Your tokens are saved in `youtube-tokens.json` (automatically created)
+5. Tokens are stored per-user in the database. For single-user local testing,
+   you can also provide `YOUTUBE_TOKENS_JSON` in `.env`.
 
 ### 5. Upload Behavior
 
