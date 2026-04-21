@@ -3,7 +3,7 @@
 A Node.js service that polls a local queue of Pinterest links, downloads the
 referenced videos to your machine, and tracks the processed items so they are
 not fetched twice. This lays the groundwork for an automated Pinterest → YouTube
-upload pipeline.
+upload pipeline.    
 
 ## Requirements
 
