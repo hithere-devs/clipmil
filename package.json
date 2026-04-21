@@ -5,7 +5,7 @@
 	"type": "commonjs",
 	"main": "dist/index.js",
 	"scripts": {
-		"build": "node --max-old-space-size=4096 ./node_modules/.bin/tsc --project tsconfig.json"
+		"build": "node --max-old-space-size=4096 ./node_modules/.bin/tsc --project tsconfig.json",
 		"start": "node dist/index.js",
 		"dev": "tsx watch src/index.ts",
 		"clean": "rimraf dist",
